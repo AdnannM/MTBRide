@@ -9,24 +9,23 @@ on:
 jobs:
   build:
     name: Build and Test using iPhone 16 Pro Max
-    runs-on: macos-latest
+    runs-on: macos-14  # ✅ Use macOS 14 for newer Xcode
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Select Latest Xcode Version  # ✅ Ensure the latest Xcode is used
+        run: sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
+
       - name: Set Environment Variables
         env:
-          scheme: "YourSchemeName"  # Replace with your actual scheme
+          scheme: "MTBRide"
           platform: "iOS Simulator"
           device: "iPhone 16 Pro Max"
         run: echo "Using scheme: $scheme and device: $device"
 
       - name: Build
-        env:
-          scheme: "MTBRide"
-          platform: "iOS Simulator"
-          device: "iPhone 16 Pro Max"
         run: |
           if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then 
             filetype_parameter="workspace" 
@@ -39,10 +38,6 @@ jobs:
           xcodebuild build-for-testing -scheme "$scheme" -"$filetype_parameter" "$file_to_build" -destination "platform=$platform,name=$device"
 
       - name: Run Tests
-        env:
-          scheme: "YourSchemeName"
-          platform: "iOS Simulator"
-          device: "iPhone 16 Pro Max"
         run: |
           if [ "`ls -A | grep -i \\.xcworkspace\$`" ]; then 
             filetype_parameter="workspace" 
