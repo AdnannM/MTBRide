@@ -15,22 +15,25 @@ struct IntroPage: View {
     @State private var timer = Timer.publish(every: 0.01, on: .current, in: .default).autoconnect()
     @State private var initialAnimation: Bool = false
     @State private var titleProgress: CGFloat = 0
+    @State private var isNavigationToSignIn: Bool = false
     
     var body: some View {
-        ZStack {
-            /// Ambient Background View
-            AmbientBackground()
-                .animation(.easeIn(duration: 1), value: activeCard)
-            
-            VStack(spacing: 40) {
+        NavigationStack {
+            ZStack {
+                /// Ambient Background View
+                AmbientBackground()
+                    .animation(.easeIn(duration: 1), value: activeCard)
                 
-                MainContent()
-                TextSection()
-                
+                VStack(spacing: 40) {
+                    MainContent()
+                    TextSection()
+                }
+                .safeAreaPadding(15)
             }
-            .safeAreaPadding(15)
+            .navigationDestination(isPresented: $isNavigationToSignIn) {
+                SignIn()
+            }
         }
-        
         .onReceive(timer) { _ in
             currentScrollOffset += 0.35
             scrollPosition.scrollTo(x: currentScrollOffset)
@@ -75,7 +78,6 @@ struct IntroPage: View {
         }
     }
     
-    
     @ViewBuilder
     private func TextSection() -> some View {
         VStack(spacing: 4) {
@@ -98,6 +100,7 @@ struct IntroPage: View {
         Button {
             /// cancel timer
             timer.upstream.connect().cancel()
+            isNavigationToSignIn.toggle()
         } label: {
             Text("Create Account")
                 .fontWeight(.semibold)
