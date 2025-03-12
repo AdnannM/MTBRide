@@ -16,24 +16,22 @@ struct IntroPage: View {
     @State private var initialAnimation: Bool = false
     @State private var titleProgress: CGFloat = 0
     @State private var isNavigationToSignIn: Bool = false
+    @Environment(NavigationManager.self) var navigationManager
     
     var body: some View {
-        NavigationStack {
-            ZStack {
-                /// Ambient Background View
-                AmbientBackground()
-                    .animation(.easeIn(duration: 1), value: activeCard)
-                
-                VStack(spacing: 40) {
-                    MainContent()
-                    TextSection()
-                }
-                .safeAreaPadding(15)
+        
+        ZStack {
+            /// Ambient Background View
+            AmbientBackground()
+                .animation(.easeIn(duration: 1), value: activeCard)
+            
+            VStack(spacing: 40) {
+                MainContent()
+                TextSection()
             }
-            .navigationDestination(isPresented: $isNavigationToSignIn) {
-                SignIn()
-            }
+            .safeAreaPadding(15)
         }
+        
         .onReceive(timer) { _ in
             currentScrollOffset += 0.35
             scrollPosition.scrollTo(x: currentScrollOffset)
@@ -100,7 +98,7 @@ struct IntroPage: View {
         Button {
             /// cancel timer
             timer.upstream.connect().cancel()
-            isNavigationToSignIn.toggle()
+            navigationManager.navigateToSignIn()
         } label: {
             Text("Create Account")
                 .fontWeight(.semibold)
@@ -165,11 +163,4 @@ struct IntroPage: View {
     IntroPage()
 }
 
-extension View {
-    func blurOpacityEffect(_ show: Bool) -> some View {
-        self
-            .blur(radius: show ? 0 : 2)
-            .opacity(show ? 1 : 0)
-            .scaleEffect(show ? 1 : 0.9)
-    }
-}
+

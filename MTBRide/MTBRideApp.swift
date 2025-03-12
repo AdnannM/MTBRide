@@ -28,6 +28,7 @@ struct MTBRideApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .withRouter()
         }
     }
 }
