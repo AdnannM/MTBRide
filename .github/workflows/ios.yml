@@ -19,11 +19,12 @@ jobs:
         run: sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
 
       - name: Set Environment Variables
+        # run: echo "Using scheme: $scheme and device: $device"
         env:
           scheme: "MTBRide"
           platform: "iOS Simulator"
           device: "iPhone 16 Pro Max"
-        run: echo "Using scheme: $scheme and device: $device"
+        
 
       - name: Build
         run: |
